@@ -1,0 +1,180 @@
+# This text file has the outputs for following test runs
+# * bash -c "sleep 1 && exit 0"
+# * bash -c "sleep 5 && exit 0"
+# * bash -c "sleep 1 && exit 1"
+# * sh -c "sleep 10 && exit 1"
+# * bash -c "if [ -f lock ]; then exit 1; fi; sleep 10 && touch lock && exit 1"
+# * bash -c "if [ -f lock ]; then exit 1; fi; sleep 10 && touch lock && exit 1" (with 1 attempt only)
+
+
+1. bash -c "sleep 1 && exit 0", bash -c "sleep 1 && exit 1"
+
+> bash standalone_daemon 5 3 standalone 2 Yes
+
+	[Info] Checking the service : standalone
+	standalone Service is in stopped state, going to start
+	Service Started Successfully standalone 
+
+
+	[Info] Checking the service : standalone
+	standalone Service is in stopped state, going to start
+	Service Started Successfully standalone 
+
+
+	[Info] Checking the service : standalone
+	standalone Service is in stopped state, going to start
+	Service Started Successfully standalone 
+
+
+	[Info] Checking the service : standalone
+	standalone Service is in stopped state, going to start
+	Service Started Successfully standalone 
+
+===============================================
+2. bash -c "sleep 5 && exit 0"
+
+> bash standalone_daemon 5 3 standalone 2 Yes
+
+	[Info] Checking the service : standalone
+	standalone Service is in stopped state, going to start
+	Service Started Successfully standalone 
+
+
+	[Info] Checking the service : standalone
+	standalone Service is running state
+
+
+	[Info] Checking the service : standalone
+	standalone Service is running state
+
+
+	[Info] Checking the service : standalone
+	standalone Service is in stopped state, going to start
+	Service Started Successfully standalone 
+
+
+	[Info] Checking the service : standalone
+	standalone Service is running state
+
+
+	[Info] Checking the service : standalone
+	standalone Service is running state
+
+
+	[Info] Checking the service : standalone
+	standalone Service is in stopped state, going to start
+	Service Started Successfully standalone 
+
+======================================================
+3. sh -c "sleep 10 && exit 1"
+
+> bash standalone_daemon 5 3 standalone 2 Yes
+	[Info] Checking the service : standalone
+	standalone Service is in stopped state, going to start
+	Service Started Successfully standalone 
+
+
+	[Info] Checking the service : standalone
+	standalone Service is running state
+
+
+	[Info] Checking the service : standalone
+	standalone Service is running state
+
+
+	[Info] Checking the service : standalone
+	standalone Service is running state
+
+
+	[Info] Checking the service : standalone
+	standalone Service is running state
+
+
+	[Info] Checking the service : standalone
+	standalone Service is in stopped state, going to start
+	Service Started Successfully standalone 
+
+
+	[Info] Checking the service : standalone
+	standalone Service is running state
+
+
+	[Info] Checking the service : standalone
+	standalone Service is running state
+....
+
+
+=====================================================
+4. bash -c "if [ -f lock ]; then exit 1; fi; sleep 10 && touch lock && exit 1"
+
+> bash standalone_daemon 5 5 standalone 2 Yes
+
+	[Info] Checking the service : standalone
+	standalone Service is in stopped state, going to start
+	Service Started Successfully standalone 
+
+
+	[Info] Checking the service : standalone
+	standalone Service is running state
+
+
+	[Info] Checking the service : standalone
+	standalone Service is running state
+
+
+	[Info] Checking the service : standalone
+	standalone Service is running state
+
+
+	[Info] Checking the service : standalone
+	standalone Service is running state
+
+
+	[Info] Checking the service : standalone
+	standalone Service is in stopped state, going to start
+	[Attempt 1/5]Trying To Start Service
+	[Attempt 2/5]Trying To Start Service
+	[Attempt 3/5]Trying To Start Service
+	[Attempt 4/5]Trying To Start Service
+	[Attempt 5/5]Trying To Start Service
+	Unable To Start Service standalone
+
+
+
+
+=============================================
+5. bash -c "if [ -f lock ]; then exit 1; fi; sleep 10 && touch lock && exit 1" (with 1 attempt only)
+
+> bash standalone_daemon 5 1 standalone 2 Yes
+
+	[Info] Checking the service : standalone
+	standalone Service is in stopped state, going to start
+	Service Started Successfully standalone 
+
+
+	[Info] Checking the service : standalone
+	standalone Service is running state
+
+
+	[Info] Checking the service : standalone
+	standalone Service is running state
+
+
+	[Info] Checking the service : standalone
+	standalone Service is running state
+
+
+	[Info] Checking the service : standalone
+	standalone Service is running state
+
+
+	[Info] Checking the service : standalone
+	standalone Service is in stopped state, going to start
+	[Attempt 1/1]Trying To Start Service
+	Unable To Start Service standalone
+
+
+	[Info] Checking the service : standalone
+	standalone Service is in stopped state, going to start
+	[Attempt 1/1]Trying To Start Service
+	Unable To Start Service standalone

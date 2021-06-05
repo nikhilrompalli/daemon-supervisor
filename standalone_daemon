@@ -1,0 +1,128 @@
+#!/bin/bash 
+# Script to check the process is running at all times and starts it in the case it is down
+# upstox.service file is taken and added testcases in service file to test
+
+# Global Vars
+SERVICECMD="/usr/sbin/service"
+ECHO="/bin/echo"
+lOG="daemon.log"
+DATE="/bin/date"
+
+
+##
+## Functions
+##
+
+usage() {
+if [ "$1" != "" ]; then
+	echo $*
+fi
+
+echo "Usage: $0 <Seconds_to_wait_attempts> <Number_of_attemps> <servicename> <Check_interval_in_sec> <Generate_log[Yes/No]>"
+exit 1
+}
+
+generate_logs()
+{
+	if [ $sgenlogs == "Yes" ]
+	then
+		if [ ! -f $lOG ]
+		then
+			touch $lOG
+		else
+			DATE=`/bin/date`
+			$ECHO "$DATE [INFO] $*: $sname" >> $lOG
+		fi
+	fi
+}
+
+#
+# Method to start the service and wait till service successfully starts or wait till timeout and try again upto max attempts as specified.  
+#
+start_service ()
+{
+	foo=`/usr/sbin/service $sname start 2>&1`
+	
+	#
+	# Attempts to start the service 
+	#
+	count=$sattempts
+	while [ "$count" != "0" ]
+	do
+		foo=`/usr/sbin/service $sname status 2>&1`
+		state=$?
+		if [ "$state" != "0" ]
+		then
+			present_attempt=`expr $sattempts - $count + 1`
+			msg="[Attempt $present_attempt/$sattempts]Trying To Start Service"
+			echo "$msg"
+			generate_logs $msg
+			sleep $stimewait
+		else
+			return 0
+		fi
+		count=`expr $count - 1`
+	done
+	return 1
+}
+
+start () 
+{
+	#
+	# Starting a particular service
+	#
+	start_service
+	state=$?
+	if [ "$state" == "0" ]
+	then
+		msg="Service Started Successfully"
+		echo -e "$msg $sname \n\n"
+		generate_logs $msg
+		return 0
+	else
+		msg="Unable To Start Service"
+		echo -e "$msg $sname\n\n"
+		generate_logs $msg
+		return 1
+	fi
+}
+
+status ()
+{
+	foo=`/usr/sbin/service $sname status 2>&1`
+	state=$?
+	if [ "$state" = "0" ]
+	then
+		echo -e "$sname Service is running state\n\n"
+		return 0
+	else
+		echo -e "$sname Service is in stopped state, going to start"
+		start
+		return 1
+	fi
+}
+
+##
+## Main program loop
+##
+
+# Check that we got the requisit number of args
+if [ "$#" != 5 ]; then
+	usage
+	exit 1
+fi
+
+# Gather the command line args
+stimewait=$1
+sattempts=$2
+sname=$3
+scheckinterval=$4
+sgenlogs=$5
+
+# Check the status of the proccess in given interval of time.
+while true;
+do
+	echo "[Info] Checking the service : $sname"
+	status "$sname"
+	sleep $scheckinterval
+done
